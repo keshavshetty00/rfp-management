@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AI-Powered RFP Management</title>
+
+<style>
+:root {
+  --primary: #7c3aed;
+  --primary-dark: #6d28d9;
+  --secondary: #a78bfa;
+  --accent: #10b981;
+  --light: #f5f3ff;
+  --dark: #312e81;
+  --text-gray: #64748b;
+  --border: #e2e8f0;
+}
+
+* { 
+  box-sizing: border-box; 
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  color: #1e293b;
+}
+
+.header {
+  background: linear-gradient(135deg, rgba(109, 40, 217, 0.95), rgba(124, 58, 237, 0.95));
+  backdrop-filter: blur(10px);
+  padding: 40px 24px;
+  text-align: center;
+  color: white;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.header p {
+  font-size: 1.1rem;
+  opacity: 0.95;
+  font-weight: 300;
+}
+
+.container { 
+  max-width: 1200px; 
+  margin: 40px auto; 
+  padding: 0 24px; 
+}
+
+.card {
+  background: white;
+  border-radius: 20px;
+  padding: 32px;
+  margin-bottom: 28px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid rgba(124, 58, 237, 0.1);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 25px 70px rgba(124, 58, 237, 0.25);
+}
+
+.card h2 {
+  font-size: 1.75rem;
+  margin-bottom: 24px;
+  color: var(--dark);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.card h2:before {
+  content: '';
+  width: 4px;
+  height: 28px;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  border-radius: 10px;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 14px 18px;
+  border-radius: 12px;
+  border: 2px solid var(--border);
+  font-size: 15px;
+  transition: all 0.3s ease;
+  font-family: inherit;
+  background: #fafafa;
+}
+
+input:focus, textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: white;
+  box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.1);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 120px;
+  line-height: 1.6;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+button {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: white;
+  padding: 14px 28px;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(124, 58, 237, 0.4);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+table { 
+  width: 100%; 
+  margin-top: 24px; 
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+thead {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: white;
+}
+
+th {
+  padding: 16px;
+  font-weight: 600;
+  text-align: left;
+  text-transform: uppercase;
+  font-size: 13px;
+  letter-spacing: 0.8px;
+}
+
+td { 
+  padding: 16px; 
+  border-bottom: 1px solid var(--border);
+  background: white;
+}
+
+tbody tr:hover {
+  background: #f8fafc;
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+#vendorList {
+  list-style: none;
+  margin-top: 20px;
+}
+
+#vendorList li {
+  padding: 14px 18px;
+  margin-bottom: 10px;
+  background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+  border-radius: 10px;
+  border-left: 4px solid var(--primary);
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+#vendorList li:hover {
+  background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+  transform: translateX(6px);
+}
+
+.footer { 
+  text-align: center; 
+  padding: 24px; 
+  font-size: 14px;
+  color: white;
+  font-weight: 300;
+  opacity: 0.9;
+}
+
+/* Spacing utilities */
+br { display: none; }
+.card > *:not(:last-child) { margin-bottom: 20px; }
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <h1>🤖 AI-Powered RFP Management</h1>
+  <p>Smart procurement • AI insights • Vendor comparison</p>
+</div>
+
+<div class="container">
+
+<!-- CREATE RFP -->
+<div class="card">
+  <h2>📝 Create RFP</h2>
+  <textarea id="rfpDesc" placeholder="Describe your RFP requirements... e.g., I need 200 laptops with 16GB RAM and 115 monitors 34-inch. Budget is $500,000. Delivery within 45 days. Payment terms net 20. Warranty 2 year."></textarea>
+  <button onclick="createRfp()">✨ Create RFP</button>
+  <div id="rfpResult" style="margin-top: 15px; padding: 15px; background: #f0fdf4; border-radius: 10px; display: none; color: #166534; font-weight: 500;"></div>
+</div>
+
+<!-- LIST ALL RFPs -->
+<div class="card">
+  <h2>📋 All RFPs</h2>
+  <button onclick="loadRfps()">🔄 Load RFPs</button>
+  <div id="rfpListContainer" style="margin-top: 20px;"></div>
+</div>
+
+<!-- ADD VENDOR -->
+<div class="card">
+  <h2>👥 Add Vendor</h2>
+  <div class="grid">
+    <input id="vName" placeholder="Vendor Name">
+    <input id="vEmail" placeholder="Email Address">
+    <input id="vPhone" placeholder="Phone Number">
+    <input id="vAddress" placeholder="Address">
+  </div>
+  <button onclick="addVendor()">➕ Add Vendor</button>
+</div>
+
+<!-- LIST VENDORS -->
+<div class="card">
+  <h2>👥 All Vendors</h2>
+  <button onclick="loadVendors()">🔄 Load Vendors</button>
+  <ul id="vendorList"></ul>
+</div>
+
+<!-- SEND RFP -->
+<div class="card">
+  <h2>📧 Send RFP to Vendors</h2>
+  <p style="color: #64748b; font-size: 14px; margin-bottom: 15px;">Select vendors from the list above and enter their IDs</p>
+  <div class="grid">
+    <input id="sendRfpId" placeholder="RFP ID (e.g., 1)" type="number" min="1">
+    <input id="sendVendorIds" placeholder="Vendor IDs (e.g., 1,2)">
+  </div>
+  <button onclick="sendRfp()">📤 Send RFP</button>
+  <div id="sendRfpStatus" style="margin-top: 15px; display: none;"></div>
+</div>
+
+<!-- SIMULATE VENDOR EMAIL -->
+<div class="card">
+  <h2>📨 Simulate Vendor Email Response</h2>
+  <div class="grid">
+    <input id="emailFrom" placeholder="Vendor Email">
+    <input id="emailSubject" placeholder="Subject" value="Proposal for RFP">
+  </div>
+  <textarea id="emailBody" placeholder="Vendor proposal body... e.g., We offer 20 laptops and 15 monitors for $48,000. Delivery in 25 days. Net 30 payment. Warranty 1 year."></textarea>
+  <div class="grid">
+    <input id="emailRfpId" placeholder="RFP ID" type="number">
+    <input id="emailVendorId" placeholder="Vendor ID" type="number">
+  </div>
+  <button onclick="simulateEmail()">✉️ Submit Vendor Proposal</button>
+</div>
+
+<!-- COMPARE PROPOSALS -->
+<div class="card">
+  <h2>🔍 Compare Proposals</h2>
+  <input id="compareRfpId" placeholder="Enter RFP ID" type="number">
+  <button onclick="compare()">📊 Compare Proposals</button>
+
+  <table id="compareTable" style="display: none;">
+    <thead>
+      <tr>
+        <th>Proposal ID</th>
+        <th>Vendor ID</th>
+        <th>Price</th>
+        <th>Delivery Days</th>
+        <th>Payment Terms</th>
+        <th>Warranty</th>
+      </tr>
+    </thead>
+    <tbody id="compareBody"></tbody>
+  </table>
+</div>
+
+</div>
+
+<div class="footer">© 2025 AI-Powered RFP</div>
+
+<script>
+const BASE = "http://localhost:8080/api";
+
+/* CREATE RFP */
+async function createRfp() {
+  const description = document.getElementById('rfpDesc').value;
+  if (!description.trim()) {
+    alert("⚠️ Please enter RFP description");
+    return;
+  }
+  
+  try {
+    const res = await fetch(`${BASE}/rfp/generate`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ description })
+    });
+    
+    const data = await res.json();
+    document.getElementById('rfpResult').style.display = 'block';
+    document.getElementById('rfpResult').innerHTML = `
+      ✅ RFP Created Successfully!<br>
+      <strong>ID:</strong> ${data.id} | <strong>Title:</strong> ${data.title} | 
+      <strong>Budget:</strong> ₹${data.budget} | <strong>Delivery:</strong> ${data.deliveryDays} days
+    `;
+    document.getElementById('rfpDesc').value = '';
+    loadRfps();
+  } catch (error) {
+    alert("❌ Error creating RFP: " + error.message);
+  }
+}
+
+/* LOAD ALL RFPs */
+async function loadRfps() {
+  try {
+    const res = await fetch(`${BASE}/rfp`);
+    const data = await res.json();
+    const container = document.getElementById('rfpListContainer');
+    
+    if (data.length === 0) {
+      container.innerHTML = '<p style="color: #64748b; text-align: center;">No RFPs found</p>';
+      return;
+    }
+    
+    container.innerHTML = '<table style="display: table;"><thead><tr><th>ID</th><th>Title</th><th>Budget</th><th>Delivery Days</th><th>Payment Terms</th><th>Warranty</th><th>Created At</th></tr></thead><tbody>' +
+      data.map(rfp => `
+        <tr>
+          <td>${rfp.id}</td>
+          <td>${rfp.title || 'N/A'}</td>
+          <td>₹${rfp.budget || 0}</td>
+          <td>${rfp.deliveryDays || 'N/A'}</td>
+          <td>${rfp.paymentTerms || 'N/A'}</td>
+          <td>${rfp.warranty || 'N/A'}</td>
+          <td>${new Date(rfp.createdAt).toLocaleDateString()}</td>
+        </tr>
+      `).join('') + '</tbody></table>';
+  } catch (error) {
+    alert("❌ Error loading RFPs: " + error.message);
+  }
+}
+
+/* ADD VENDOR */
+async function addVendor() {
+  const name = document.getElementById('vName').value;
+  const email = document.getElementById('vEmail').value;
+  const phone = document.getElementById('vPhone').value;
+  const address = document.getElementById('vAddress').value;
+  
+  if (!name || !email) {
+    alert("⚠️ Please enter vendor name and email");
+    return;
+  }
+  
+  try {
+    await fetch(`${BASE}/vendor`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, phone, address })
+    });
+    
+    alert("✅ Vendor added successfully");
+    document.getElementById('vName').value = '';
+    document.getElementById('vEmail').value = '';
+    document.getElementById('vPhone').value = '';
+    document.getElementById('vAddress').value = '';
+    loadVendors();
+  } catch (error) {
+    alert("❌ Error adding vendor: " + error.message);
+  }
+}
+
+/* LIST VENDORS */
+async function loadVendors() {
+  try {
+    const res = await fetch(`${BASE}/vendor`);
+    const data = await res.json();
+    const list = document.getElementById('vendorList');
+    
+    if (data.length === 0) {
+      list.innerHTML = '<li style="border: none; background: transparent; color: #64748b;">No vendors found</li>';
+      return;
+    }
+    
+    list.innerHTML = data.map(v => `
+      <li>
+        <strong>ID: ${v.id}</strong> - ${v.name}<br>
+        <small style="color: #64748b;">📧 ${v.email} | 📞 ${v.phone || 'N/A'}</small>
+      </li>
+    `).join('');
+  } catch (error) {
+    alert("❌ Error loading vendors: " + error.message);
+  }
+}
+
+/* SEND RFP */
+async function sendRfp() {
+  const rfpId = document.getElementById('sendRfpId').value;
+  const vendorIdsInput = document.getElementById('sendVendorIds').value;
+  
+  if (!rfpId || !vendorIdsInput) {
+    alert("⚠️ Please enter RFP ID and Vendor IDs");
+    return;
+  }
+  
+  // Validate vendor IDs format
+  const vendorIds = vendorIdsInput.split(",").map(id => {
+    const num = parseInt(id.trim());
+    if (isNaN(num)) {
+      alert("⚠️ Invalid vendor ID format. Please use numbers separated by commas (e.g., 1,2)");
+      throw new Error("Invalid format");
+    }
+    return num;
+  });
+  
+  // First, verify RFP exists
+  try {
+    const rfpCheck = await fetch(`${BASE}/rfp`);
+    const allRfps = await rfpCheck.json();
+    const rfpExists = allRfps.some(r => r.id == rfpId);
+    
+    if (!rfpExists) {
+      alert(`⚠️ RFP with ID ${rfpId} not found. Please check the RFP ID from the list above.`);
+      return;
+    }
+  } catch (e) {
+    console.error("Error checking RFP:", e);
+  }
+  
+  // Verify vendors exist
+  try {
+    const vendorCheck = await fetch(`${BASE}/vendor`);
+    const allVendors = await vendorCheck.json();
+    const vendorMap = new Map(allVendors.map(v => [v.id, v]));
+    
+    const invalidIds = vendorIds.filter(id => !vendorMap.has(id));
+    if (invalidIds.length > 0) {
+      alert(`⚠️ Vendor IDs not found: ${invalidIds.join(", ")}\n\nPlease check the vendor list above for valid IDs.`);
+      return;
+    }
+    
+    // Show which vendors will receive the email
+    const vendorNames = vendorIds.map(id => vendorMap.get(id).name).join(", ");
+    const vendorEmails = vendorIds.map(id => vendorMap.get(id).email).join(", ");
+    
+    if (!confirm(`Send RFP #${rfpId} to:\n\n${vendorNames}\n(${vendorEmails})\n\nContinue?`)) {
+      return;
+    }
+  } catch (e) {
+    console.error("Error checking vendors:", e);
+  }
+  
+  try {
+    console.log("Sending RFP request...", { rfpId, vendorIds });
+    
+    const response = await fetch(`${BASE}/email/send`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        rfpId: parseInt(rfpId),
+        vendorIds: vendorIds
+      })
+    });
+    
+    console.log("Response status:", response.status);
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Error response:", errorText);
+      alert("❌ Error sending RFP:\n\n" + errorText + "\n\nPlease check:\n- RFP ID exists\n- Vendor IDs exist\n- Email configuration is correct");
+      return;
+    }
+    
+    const result = await response.text();
+    console.log("Success response:", result);
+    alert("✅ " + result + "\n\nCheck the vendor email inboxes!");
+    
+    // Clear inputs
+    document.getElementById('sendRfpId').value = '';
+    document.getElementById('sendVendorIds').value = '';
+  } catch (error) {
+    console.error("Exception:", error);
+    alert("❌ Network error: " + error.message);
+  }
+}
+
+/* SIMULATE VENDOR EMAIL */
+async function simulateEmail() {
+  const from = document.getElementById('emailFrom').value;
+  const subject = document.getElementById('emailSubject').value;
+  const body = document.getElementById('emailBody').value;
+  const rfpId = document.getElementById('emailRfpId').value;
+  const vendorId = document.getElementById('emailVendorId').value;
+  
+  if (!from || !body || !rfpId || !vendorId) {
+    alert("⚠️ Please fill all fields");
+    return;
+  }
+  
+  try {
+    const res = await fetch(`${BASE}/email/inbound`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        from,
+        subject,
+        body,
+        rfpId: parseInt(rfpId),
+        vendorId: parseInt(vendorId)
+      })
+    });
+    
+    const data = await res.json();
+    alert(`✅ Vendor proposal submitted!\nPrice: ₹${data.price}\nDelivery: ${data.deliveryDays} days\nPayment: ${data.paymentTerms}\nWarranty: ${data.warranty}`);
+    
+    document.getElementById('emailFrom').value = '';
+    document.getElementById('emailBody').value = '';
+  } catch (error) {
+    alert("❌ Error submitting proposal: " + error.message);
+  }
+}
+
+/* COMPARE PROPOSALS */
+async function compare() {
+  const rfpId = document.getElementById('compareRfpId').value;
+  
+  if (!rfpId) {
+    alert("⚠️ Please enter RFP ID");
+    return;
+  }
+  
+  try {
+    const res = await fetch(`${BASE}/compare/${rfpId}`);
+    
+    if (!res.ok) {
+      const errorText = await res.text();
+      alert("❌ Error: " + errorText);
+      return;
+    }
+    
+    const data = await res.json();
+    console.log("Compare response:", data);
+    
+    const table = document.getElementById('compareTable');
+    const tbody = document.getElementById('compareBody');
+    
+    // Handle different response formats
+    let proposals = [];
+    
+    if (Array.isArray(data)) {
+      proposals = data;
+    } else if (data.proposals && Array.isArray(data.proposals)) {
+      proposals = data.proposals;
+    } else if (typeof data === 'object') {
+      // If it's a single object, wrap it in an array
+      proposals = [data];
+    }
+    
+    if (proposals.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #64748b;">No proposals found for this RFP. Please submit vendor proposals first.</td></tr>';
+      table.style.display = 'table';
+      return;
+    }
+    
+    tbody.innerHTML = proposals.map(p => `
+      <tr>
+        <td>${p.proposalId || p.id || 'N/A'}</td>
+        <td>${p.vendorId || 'N/A'}</td>
+        <td>₹${p.price || 0}</td>
+        <td>${p.deliveryDays || 'N/A'} days</td>
+        <td>${p.paymentTerms || 'N/A'}</td>
+        <td>${p.warranty || 'N/A'}</td>
+      </tr>
+    `).join('');
+    
+    table.style.display = 'table';
+  } catch (error) {
+    console.error("Compare error:", error);
+    alert("❌ Error comparing proposals: " + error.message);
+  }
+}
+
+// Auto-load data on page load
+window.onload = function() {
+  loadRfps();
+  loadVendors();
+};
+</script>
+
+</body>
+</html>
